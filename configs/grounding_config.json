@@ -1,0 +1,54 @@
+{
+  "_description": "Grounding numbers for motion-gated KV persistence, measured on the target machine. All gpu.* values are device-queried (Task 0.1/0.3), not assumed. Re-derive if target GPU or model size changes.",
+  "derived_on": "2026-08-22",
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "compute_capability": "8.6",
+    "multiprocessor_count": 30,
+    "vram_total_bytes": 6441926656,
+    "l2_cache_bytes": 3145728,
+    "max_persisting_l2_bytes": 2162688,
+    "access_policy_max_window_bytes": 134213632,
+    "power_default_limit_w": 80.0,
+    "power_max_limit_w": 120.0
+  },
+  "model": {
+    "scope": "DiT self-attention only",
+    "class": "Wan2.1-1.3B-shaped backbone",
+    "layers": 30,
+    "hidden_dim": 1536,
+    "heads": 12,
+    "head_dim": 128,
+    "gqa": false,
+    "kv_dtype": "float16",
+    "bytes_per_kv_element": 2,
+    "tokens_per_frame": 560,
+    "latent_grid": [30, 52],
+    "tile_size_tokens": 16
+  },
+  "kv_derivation": {
+    "kv_bytes_per_token_per_layer": 6144,
+    "kv_bytes_per_tile_per_layer": 98304,
+    "kv_bytes_per_frame_per_layer": 3440640,
+    "tiles_per_frame": 35,
+    "formulae": {
+      "kv_bytes_per_token_per_layer": "hidden_dim * 2_tensors(K,V) * bytes_per_kv_element = 1536*2*2",
+      "kv_bytes_per_tile_per_layer": "tile_size_tokens * kv_bytes_per_token_per_layer",
+      "kv_bytes_per_frame_per_layer": "tokens_per_frame * kv_bytes_per_token_per_layer",
+      "tiles_persistable": "floor(max_persisting_l2_bytes / kv_bytes_per_tile_per_layer)"
+    }
+  },
+  "persistence_budget": {
+    "max_persisting_l2_bytes": 2162688,
+    "kv_tile_bytes": 98304,
+    "tiles_fully_persistable": 22,
+    "tokens_covered_by_full_tiles": 352,
+    "frame_coverage_fraction": 0.6285714285714286,
+    "headroom_note": "budget is per-layer by design (Phase 3 re-establishes windows fresh each layer); 22/35 tiles means admission control is mandatory even within a single frame"
+  },
+  "constraints": [
+    "never set cudaLimitPersistingL2CacheSize above gpu.max_persisting_l2_bytes (2162688)",
+    "accessPolicyWindow.num_bytes must stay <= gpu.access_policy_max_window_bytes (134213632)",
+    "hitRatio * window should be sized so expected persisting footprint stays within budget to avoid thrash-demote cycles"
+  ]
+}
