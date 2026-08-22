@@ -39,8 +39,9 @@ traces/*.json.gz
 traces/data/
 
 # Generated measurement output: sweep results, logs, CSVs, plots (regenerable)
-outputs/
-results/
+# (root-anchored so docs/results/ stays tracked - portfolio summaries live there)
+/outputs/
+/results/
 *.csv
 *.log
 docs/results/plots/
