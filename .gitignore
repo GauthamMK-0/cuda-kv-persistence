@@ -1,0 +1,55 @@
+# Local tracking / working files (kept out of project history by design)
+COMMITS.md
+ISSUES.md
+PROGRESS.md
+
+# Task spec / prompt file (local only)
+build_prompt.md
+
+# Virtual environment (cloned locally, machine-specific)
+.venv/
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# CUDA build artifacts
+*.o
+*.so
+*.a
+build/
+bin/
+compile_commands.json
+
+# Nsight Compute / Nsight Systems captures (regenerable by profiling runs)
+*.ncu-rep
+*.nsys-rep
+*.qdrep
+*.qdstrm
+
+# Large generated data: golden tensors, traces, arrays (regenerate via traces/gen_golden.py etc.)
+traces/*.pt
+traces/*.bin
+traces/*.npy
+traces/*.npz
+traces/*.json.gz
+traces/data/
+
+# Generated measurement output: sweep results, logs, CSVs, plots (regenerable)
+outputs/
+results/
+*.csv
+*.log
+docs/results/plots/
+docs/results/assets/*.png
+docs/results/assets/*.jpg
+
+# Compiled smoke tests / binaries produced by nvcc in-tree
+tests/build/
+src/**/*.o
+
+# OS / editor noise
+.DS_Store
