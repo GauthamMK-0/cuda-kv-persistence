@@ -22,15 +22,16 @@
     "gqa": false,
     "kv_dtype": "float16",
     "bytes_per_kv_element": 2,
-    "tokens_per_frame": 560,
+    "tokens_per_frame": 1560,
     "latent_grid": [30, 52],
     "tile_size_tokens": 16
   },
   "kv_derivation": {
     "kv_bytes_per_token_per_layer": 6144,
     "kv_bytes_per_tile_per_layer": 98304,
-    "kv_bytes_per_frame_per_layer": 3440640,
-    "tiles_per_frame": 35,
+    "kv_bytes_per_frame_per_layer": 9584640,
+    "tiles_per_frame": 98,
+    "tiles_per_frame_note": "1560/16 = 97.5 -> 97 full tiles + 1 partial (8 tokens) = 98; matches build_prompt's ~100-tile action space",
     "formulae": {
       "kv_bytes_per_token_per_layer": "hidden_dim * 2_tensors(K,V) * bytes_per_kv_element = 1536*2*2",
       "kv_bytes_per_tile_per_layer": "tile_size_tokens * kv_bytes_per_token_per_layer",
@@ -43,8 +44,9 @@
     "kv_tile_bytes": 98304,
     "tiles_fully_persistable": 22,
     "tokens_covered_by_full_tiles": 352,
-    "frame_coverage_fraction": 0.6285714285714286,
-    "headroom_note": "budget is per-layer by design (Phase 3 re-establishes windows fresh each layer); 22/35 tiles means admission control is mandatory even within a single frame"
+    "frame_coverage_fraction_full_tiles": 0.22448979591836635,
+    "frame_coverage_note": "22 of 98 tiles/frame (~22%) fit the persisting budget; admission control is mandatory",
+    "headroom_note": "budget is per-layer by design (Phase 3 re-establishes windows fresh each layer)"
   },
   "constraints": [
     "never set cudaLimitPersistingL2CacheSize above gpu.max_persisting_l2_bytes (2162688)",
