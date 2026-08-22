@@ -39,7 +39,7 @@ the Nsight-confirmed L2 hit-rate as headline metric).
 
 ## Project-relevant derivations (preview of grounding_config.json)
 
-- K/V bytes per frame per layer: 560 tokens × 1536 dim × 2 B (fp16) × 2 (K,V) = 3,481,600 B ≈ 3.32 MiB
+- K/V bytes per frame per layer: 560 tokens × 1536 dim × 2 B (fp16) × 2 (K,V) = 3,440,640 B ≈ 3.28 MiB
 - Per 16-token tile: 16 × 1536 × 2 B × 2 = 98,304 B ≈ 96 KiB
 - Tiles fully persistable in max-persisting budget (2,162,688 B): ⌊2,162,688 / 98,304⌋ = **22 tiles**
 - Tokens/frame = 560 → tiles/frame at 16 tokens = 35 → a single frame's full KV does NOT fit the
