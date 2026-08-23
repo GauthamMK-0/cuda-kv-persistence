@@ -38,6 +38,12 @@ traces/*.npz
 traces/*.json.gz
 traces/data/
 
+# Downloadable clip cache: re-fetch anytime via traces/fetch_clip.sh
+traces/video/
+
+# Regenerable validation plots: gen_motion_from_video.py rewrites these
+docs/results/motion_heatmap_*.png
+
 # Generated measurement output: sweep results, logs, CSVs, plots (regenerable)
 # (root-anchored so docs/results/ stays tracked - portfolio summaries live there)
 /outputs/
