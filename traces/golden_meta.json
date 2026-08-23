@@ -1,0 +1,57 @@
+{
+  "generated_on": "2026-08-22",
+  "generator": "traces/gen_golden.py",
+  "torch_version": "2.5.1+cu121",
+  "source_qkv": "traces/qkv_8f.npz",
+  "source_seed": 42,
+  "precision": "float32",
+  "device": "cpu",
+  "output_shape": [
+    8,
+    1560,
+    1536
+  ],
+  "max_softmax_rowsum_error": 4.172325134277344e-07,
+  "per_frame_stats": [
+    {
+      "frame": 0,
+      "mean": -0.000147,
+      "std": 0.041727
+    },
+    {
+      "frame": 1,
+      "mean": 3.5e-05,
+      "std": 0.042924
+    },
+    {
+      "frame": 2,
+      "mean": 0.000137,
+      "std": 0.044272
+    },
+    {
+      "frame": 3,
+      "mean": 0.000168,
+      "std": 0.046219
+    },
+    {
+      "frame": 4,
+      "mean": 0.00033,
+      "std": 0.048752
+    },
+    {
+      "frame": 5,
+      "mean": 0.000616,
+      "std": 0.05226
+    },
+    {
+      "frame": 6,
+      "mean": 0.000861,
+      "std": 0.056687
+    },
+    {
+      "frame": 7,
+      "mean": 0.000989,
+      "std": 0.063646
+    }
+  ]
+}

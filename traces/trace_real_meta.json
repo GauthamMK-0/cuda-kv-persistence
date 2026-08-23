@@ -1,0 +1,48 @@
+{
+  "generated_on": "2026-08-23",
+  "generator": "traces/gen_motion_from_video.py",
+  "source": "/root/projects/cuda_solaris/traces/video/DAVIS/JPEGImages/480p/blackswan",
+  "frames": 50,
+  "size": [
+    832,
+    480
+  ],
+  "cell_px": [
+    16,
+    16
+  ],
+  "grid": [
+    30,
+    52
+  ],
+  "tile_size_tokens": 16,
+  "num_tiles": 98,
+  "farneback": {
+    "pyr_scale": 0.5,
+    "levels": 3,
+    "winsize": 15,
+    "iterations": 3,
+    "poly_n": 5,
+    "poly_sigma": 1.2,
+    "flags": 0
+  },
+  "tau_reuse": 7.135326,
+  "reuse_percentile_target": 50.0,
+  "reuse_fraction_achieved": 0.5,
+  "change_rate_percentiles": {
+    "10": 3.3309,
+    "25": 5.2948,
+    "50": 7.1353,
+    "75": 8.8134,
+    "90": 10.3435
+  },
+  "spatial_coherence_adjacent_cell_corr": {
+    "horizontal": 0.9595,
+    "vertical": 0.9589,
+    "shuffled_control": -0.0084
+  },
+  "files": {
+    "csv": "traces/motion_trace_real.csv",
+    "heatmap": "/root/projects/cuda_solaris/docs/results/motion_heatmap_blackswan.png"
+  }
+}

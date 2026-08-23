@@ -1,0 +1,75 @@
+{
+  "generated_on": "2026-08-23",
+  "generator": "traces/gen_synthetic_motion.py",
+  "torch_version": "2.5.1+cu121",
+  "numpy_version": "2.4.4",
+  "seed": 42,
+  "frames": 8,
+  "frac_static_requested": 0.65,
+  "real_motion_source": null,
+  "regime_params": {
+    "static_base_mean": 0.05,
+    "static_base_std": 0.02,
+    "static_jitter_std": 0.01,
+    "moving_start_mean": 1.5,
+    "moving_start_std": 0.4,
+    "moving_walk_std": 0.25,
+    "moving_clip": [
+      0.8,
+      4.0
+    ],
+    "kv_drift_scale": 0.15
+  },
+  "model": {
+    "tokens_per_frame": 1560,
+    "latent_grid": [
+      30,
+      52
+    ],
+    "tile_size_tokens": 16,
+    "hidden_dim": 1536,
+    "heads": 12,
+    "head_dim": 128
+  },
+  "tiles": {
+    "count": 98,
+    "static": 59,
+    "moving": 39
+  },
+  "files": {
+    "qkv_npz": {
+      "path": "traces/qkv_8f.npz",
+      "qkv_shape": [
+        8,
+        1560,
+        1536
+      ]
+    },
+    "motion_csv": {
+      "path": "traces/motion_trace_8f.csv",
+      "rows": 784
+    }
+  },
+  "validation_cosine_first_vs_last": {
+    "K": {
+      "static": {
+        "mean": 0.999722,
+        "min": 0.999147
+      },
+      "moving": {
+        "mean": 0.834489,
+        "max": 0.939605
+      }
+    },
+    "V": {
+      "static": {
+        "mean": 0.999723,
+        "min": 0.999119
+      },
+      "moving": {
+        "mean": 0.834172,
+        "max": 0.939389
+      }
+    }
+  }
+}
