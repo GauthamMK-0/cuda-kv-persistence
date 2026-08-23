@@ -104,7 +104,8 @@ def run_plain(c, policy):
 
 def profile(c, policy):
     out = ROOT / "build" / f"pol_{c['name']}_{policy}_ncu.bin"
-    cmd = [ncu(), "--csv", "--target-processes", "all",
+    cmd = [ncu(), "--csv", "--clock-control", "base",
+           "--target-processes", "all",
            "--kernel-name", "regex:attn_forward_kernel",
            "--metrics", ",".join(METRICS)]
     if c["skip"] is not None:
@@ -137,22 +138,47 @@ def profile(c, policy):
             "dram_read_bytes_sum": float(np.sum(dram))}
 
 
+def files_equal(p1, p2, chunk=1 << 24):
+    """Bitwise file equality without loading either into RAM."""
+    if Path(p1).stat().st_size != Path(p2).stat().st_size:
+        return False
+    with open(p1, "rb") as a, open(p2, "rb") as b:
+        while True:
+            x = a.read(chunk)
+            y = b.read(chunk)
+            if x != y:
+                return False
+            if not x:
+                return True
+
+
+def golden_max_abs(bin_path, golden_path, shape, block_rows=64):
+    """Max-abs error vs golden using a memmap — never holds both fully."""
+    want = np.load(golden_path)["output"]  # [F,T,D] fp32
+    mm = np.memmap(bin_path, dtype=np.float32, mode="r").reshape(shape)
+    worst = 0.0
+    for r0 in range(0, shape[0], block_rows):
+        r1 = min(r0 + block_rows, shape[0])
+        worst = max(worst, float(np.abs(mm[r0:r1] - want[r0:r1]).max()))
+    del mm
+    return worst
+
+
 def run_config(c):
     pols = c["policies"]
     outs, staged = {}, {}
     for p in pols:
         outs[p], staged[p] = run_plain(c, p)
-    arrs = {p: np.fromfile(outs[p], dtype=np.float32).reshape(
-        c["meta"]["frames"], 1560, 1536) for p in pols}
 
-    for p in pols:
-        assert np.array_equal(arrs[p], arrs["none"]), \
+    shape = (c["meta"]["frames"], 1560, 1536)
+    for p in pols[1:]:
+        assert files_equal(outs["none"], outs[p]), \
             f"[{c['name']}] {p} differs from none — remap corruption!"
-    want = np.load(ROOT / "traces" / c["golden"])["output"]
-    worst = max(float(np.abs(arrs[p] - want).max()) for p in pols)
+    worst = max(golden_max_abs(outs[p], ROOT / "traces" / c["golden"], shape)
+                for p in pols)
     assert worst < MAX_ABS_TOL, f"[{c['name']}] golden check failed {worst:.3e}"
     print(f"[{c['name']}] gates PASS (bitwise across policies; "
-          f"max_abs vs golden {worst:.2e})")
+          f"max_abs vs golden {worst:.2e})", flush=True)
 
     results = {}
     for p in pols:
@@ -194,21 +220,16 @@ def main():
                  "trace_meta_50f.json", "golden_attention_50f_cross.npz",
                  "50f", skip=34, count=16),
     ]
-    # sanity: streaming must produce identical values to dense
-    d50 = next(c for c in configs if c["name"] == "dense50")
-    s50 = next(c for c in configs if c["name"] == "stream50")
-
+    # sanity: streaming must produce identical values to dense (file compare)
     ok = True
-    for c in configs[:2] + configs[2:]:
+    for c in configs:
         ok = run_config(c) and ok
 
-    a = np.fromfile(ROOT / "build" / "pol_dense50_none_out.bin",
-                    dtype=np.float32)
-    b = np.fromfile(ROOT / "build" / "pol_stream50_none_out.bin",
-                    dtype=np.float32)
-    assert np.array_equal(a, b), "streaming != dense values!"
-    print("\ncross-mode invariant: streaming outputs == dense outputs "
-          "(bitwise)")
+    assert files_equal(ROOT / "build" / "pol_dense50_none_out.bin",
+                       ROOT / "build" / "pol_stream50_none_out.bin"), \
+        "streaming != dense values!"
+    print("cross-mode invariant: streaming outputs == dense outputs (bitwise)",
+          flush=True)
     return ok
 
 
