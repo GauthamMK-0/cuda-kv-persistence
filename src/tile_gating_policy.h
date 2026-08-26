@@ -2,8 +2,8 @@
 
 // Swappable tile-selection interface (plan Section 3.2). Implementations
 // decide WHICH spatial tiles deserve persisting-L2 residency for the current
-// step; the memory machinery underneath is unaffected (Phase 5 swaps
-// variants without touching KVTileManager).
+// step; the memory machinery underneath is unaffected (variants
+// swap without touching KVTileManager).
 
 class TileGatingPolicy {
 public:
@@ -42,7 +42,7 @@ public:
     const char* name() const override;
 };
 
-// Proposed (Part 6): persistence value under streaming semantics.
+// Proposed: persistence value under streaming semantics.
 // priority = remaining_sweeps(source frame) * (1 - normalized change rate).
 // Early stable tiles are swept by every later query and almost never
 // rewritten; recent volatile tiles have few future sweeps and churn.

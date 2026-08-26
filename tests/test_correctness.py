@@ -1,9 +1,9 @@
-"""Phase 2 scoreboard: baseline CUDA attention vs golden PyTorch reference.
+"""Correctness scoreboard: baseline CUDA attention vs golden PyTorch reference.
 
 Pipeline: ensure raw bins exist (export_bins.py) -> build the CUDA binary if
 missing -> run it -> compare its output against traces/golden_attention_8f.npz.
 
-Exit criteria (plan Phase 2): scoreboard passes against golden reference.
+Exit criteria: scoreboard passes against golden reference.
 No performance claims are made here — correctness only.
 
 Runnable standalone or via pytest.
@@ -46,7 +46,7 @@ def build_if_needed():
                 stale = True
     if stale:
         BINARY.parent.mkdir(parents=True, exist_ok=True)
-        cmd = [nvcc(), "-O3", "-arch=native", "-std=c++17",
+        cmd = [nvcc(), "-O3", "-arch=native", "-std=c++17", "-DATTN_STANDALONE",
                "-o", str(BINARY), str(src)]
         print("building:", " ".join(cmd))
         subprocess.run(cmd, check=True, cwd=ROOT)
@@ -90,7 +90,7 @@ def score():
     overall_max = max(r[1] for r in rows)
     overall_mean = max(r[2] for r in rows)
 
-    print("\n=== Phase 2 scoreboard: baseline kernel vs golden ===")
+    print("\n=== Scoreboard: baseline kernel vs golden ===")
     print(f"{'frame':>5} {'max_abs_err':>12} {'mean_abs_err':>13}")
     for f, mx, mn in rows:
         print(f"{f:>5} {mx:>12.3e} {mn:>13.3e}")

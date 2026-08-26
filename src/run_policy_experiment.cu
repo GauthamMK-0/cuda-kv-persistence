@@ -1,4 +1,4 @@
-// Phase 4 driver: runs the tiled attention kernel under one of three gating
+// // Phase 4/6 driver: runs the tiled attention kernel under one of three gating
 // policies (none | uniform | motion), wiring TileGatingPolicy selections to
 // KVTileManager's persistence arena on identical traces.
 //

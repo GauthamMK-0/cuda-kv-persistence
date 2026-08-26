@@ -1,7 +1,6 @@
-// KVTileManager implementation (plan Section 3.3) + extern "C" facade for
-// ctypes-driven tests. Phase 3: accounting + admission control; windows are
-// applied over caller-provided contiguous device ranges (Phase 4 will pass
-// repacked K/V pointers).
+// KVTileManager implementation + extern "C" facade for
+// ctypes-driven tests. Accounting + admission control; windows are
+// applied over caller-provided contiguous device ranges.
 
 #include "kv_tile_manager.h"
 #include "tile_layout.h"
@@ -84,7 +83,7 @@ bool KVTileManager::is_persisted(long tile_id) const {
     return active_.count(tile_id) != 0;
 }
 
-// ---- arena mode (Phase 4) ----
+// ---- arena mode ----
 
 bool KVTileManager::arena_init(size_t capacity_bytes,
                                size_t row_stride_floats) {
@@ -137,7 +136,7 @@ void KVTileManager::arena_end_step() {
     arena_used_ = 0;
 }
 
-// ---- streaming mode (Part 6) ----
+// ---- streaming mode ----
 
 bool KVTileManager::streaming_begin() {
     if (!arena_) return false;
@@ -270,7 +269,7 @@ void* kvtm_dev_alloc(long bytes) {
 
 void kvtm_dev_free(void* p) { cudaFree(p); }
 
-// ---- arena-mode facade (Phase 4) ----
+// ---- arena-mode facade ----
 
 int kvtm_arena_init(void* m, long cap_bytes, long row_stride_floats) {
     return static_cast<KVTileManager*>(m)->arena_init((size_t)cap_bytes,
@@ -298,7 +297,7 @@ void* kvtm_arena_ptr(void* m) {
     return static_cast<KVTileManager*>(m)->arena_device_ptr();
 }
 
-// ---- streaming facade (Part 6) ----
+// ---- streaming facade ----
 
 int kvtm_streaming_begin(void* m) {
     return static_cast<KVTileManager*>(m)->streaming_begin() ? 1 : 0;

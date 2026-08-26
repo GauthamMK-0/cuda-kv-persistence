@@ -1,9 +1,9 @@
-// Phase 2: baseline tiled multi-head attention, zero gating, no persistence.
+// Baseline tiled multi-head attention, zero gating, no persistence.
 // Math matches traces/gen_golden.py: scores = QK^T / sqrt(dh), softmax rows,
 // out = softmax @ V, FP32 throughout.
 //
-// Phase 4: optional KVMap/Arena row remapping (see attn_kernel.h). With null
-// pointers the kernel is bit-identical to the validated baseline.
+// Cross mode: causal temporal prefix — key span grows to (frame_idx+1)*T,
+// K/V/map passed at FULL buffer bases (per-frame launches only).
 //
 // Compile with -DATTN_STANDALONE to get the Part-2 CLI binary; without it,
 // this file only provides the kernel + launcher for linking.

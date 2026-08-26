@@ -1,10 +1,9 @@
-"""Phase 3 capacity/admission test: KVTileManager refuses to exceed budget.
+"""Capacity/admission test: KVTileManager refuses to exceed budget.
 
-Plan Section 3.5: deliberately overflow the budget and verify the manager
-refuses/evicts correctly rather than silently overflowing. Exit criteria
-(plan Phase 3): accounting is exact — 22 tiles of 98,304 B fill the
-2,162,688 B set-aside, tile #23 is refused, release frees room, duplicate
-admits never double-count, clear() resets everything.
+The manager must refuse tiles that would exceed the L2 set-aside budget
+rather than silently overflowing. Exit criteria: accounting is exact — 22 tiles
+of 98,304 B fill the 2,162,688 B set-aside, tile #23 is refused, release
+frees room, duplicate admits never double-count, clear() resets everything.
 
 All budget numbers come from configs/grounding_config.json (single source of
 truth). Windows are aimed at real device memory via a scratch allocation.
@@ -103,7 +102,7 @@ def scenario(cfg):
         print(f"S2 exact fill: {expected_tiles} tiles admitted, "
               f"used={lib.kvtm_persisted_bytes(m)} == budget")
 
-        # S3: overflow refusal — the core Phase 3 criterion
+        # S3: overflow refusal — the core capacity criterion
         assert admit(expected_tiles) == REFUSED
         assert lib.kvtm_persisted_bytes(m) == budget
         print(f"S3 overflow: tile #{expected_tiles} refused, "

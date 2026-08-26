@@ -1,9 +1,8 @@
 # Local tracking / working files (kept out of project history by design)
+local/
 COMMITS.md
 ISSUES.md
 PROGRESS.md
-
-# Task spec / prompt file (local only)
 build_prompt.md
 
 # Virtual environment (cloned locally, machine-specific)

@@ -1,8 +1,8 @@
-"""Phase 4/4b/6 policy A/B harness.
+"""Policy A/B harness: baseline vs persistence policies.
 
 Configs:
-  intra8 / cross8    — Phase-4 originals on the synthetic 8-frame trace.
-  dense50 / stream50 — Part-6 ablations on the REAL-motion 50-frame trace
+  intra8 / cross8    — baseline cross-frame on synthetic 8-frame trace.
+  dense50 / stream50 — causal prefix ablations on real-motion 50-frame trace
                        (blackswan flow), causal prefix attention; streaming
                        adds sticky arena slots so restage traffic becomes
                        policy-sensitive.
